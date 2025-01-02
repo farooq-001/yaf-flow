@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Ensure the script runs in an interactive shell
+if [[ ! -t 0 ]]; then
+  echo "Error: This script must be run in an interactive terminal to prompt for input."
+  exit 1
+fi
+
 # Check if the script is run as root
 if [ "$EUID" -ne 0 ]; then
   echo "Error: Please run this script as root."

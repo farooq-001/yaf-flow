@@ -38,7 +38,8 @@ mkdir -p /root/docker/yaf-flow || { echo "Error: Failed to create directory /roo
 
 # Get the SpanPort value
 if [ -z "$SPAN_PORT" ]; then
-  read -p "Enter the SpanPort value: " SpanPort
+  echo "Error: SPAN_PORT environment variable not set. Please provide it before running the script."
+  exit 1
 else
   SpanPort="$SPAN_PORT"
   echo "Using SpanPort from environment variable: $SpanPort"

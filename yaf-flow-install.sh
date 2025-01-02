@@ -1,11 +1,5 @@
 #!/bin/bash
 
-# Ensure the script runs in an interactive shell
-if [[ ! -t 0 ]]; then
-  echo "Error: This script must be run in an interactive terminal to prompt for input."
-  exit 1
-fi
-
 # Check if the script is run as root
 if [ "$EUID" -ne 0 ]; then
   echo "Error: Please run this script as root."
@@ -42,8 +36,13 @@ fi
 # Create the required directory
 mkdir -p /root/docker/yaf-flow || { echo "Error: Failed to create directory /root/docker/yaf-flow."; exit 1; }
 
-# Prompt the user for SpanPort
-read -p "Enter the SpanPort value: " SpanPort
+# Get the SpanPort value
+if [ -z "$SPAN_PORT" ]; then
+  read -p "Enter the SpanPort value: " SpanPort
+else
+  SpanPort="$SPAN_PORT"
+  echo "Using SpanPort from environment variable: $SpanPort"
+fi
 
 # Create the docker-compose.yml file
 cat <<EOF > /root/docker/yaf-flow/docker-compose.yml

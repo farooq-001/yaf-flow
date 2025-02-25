@@ -48,6 +48,7 @@ fi
 # Create the docker-compose.yml file
 cat <<EOF > /root/docker/yaf-flow/docker-compose.yml
 version: '3.8'
+version: "3.8"
 
 services:
   yaf:
@@ -57,10 +58,10 @@ services:
       - NET_ADMIN
     network_mode: host
     command: >
-      --in "$SpanPort"
+      --in $SpanPort"
       --live pcap
       --ipfix udp
-      --out 172.17.0.1
+      --out 127.0.0.1
       --silk
       --verbose
       --ipfix-port=19001
@@ -68,6 +69,20 @@ services:
       --max-payload 2048
       --plugin-name=/netsa/lib/yaf/dpacketplugin.so
     restart: unless-stopped
+
+  ####### IPFIX/NetFlow Filebeat ######
+  netflow:
+    image: docker.elastic.co/beats/filebeat:7.17.27
+    container_name: ipfix
+    network_mode: host
+    volumes:
+      - /root/docker/yaf-flow/network-flow.yaml:/usr/share/filebeat/filebeat.yml
+      - /root/docker/yaf-flow/registry:/opt/sensor/conf/etc/registry
+    environment:
+      - BEAT_PATH=/usr/share/filebeat
+    user: root
+    restart: always
+
 EOF
 
 # Notify the user that the script has completed

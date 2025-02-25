@@ -1,0 +1,38 @@
+###################### Filebeat Configuration Example #########################
+#=========================== Filebeat prospectors =============================
+filebeat.inputs:
+- type: netflow
+  enabled: true
+  max_message_size: 10KiB
+  host: "0.0.0.0:19001"
+  protocols: [ ipfix ]
+  expiration_time: 30m
+  queue_size: 8192
+
+fields:
+  log.type: "netflow"
+  sensor_id: "DM_HY_S01"
+  client_id: "123456"
+fields_under_root: true
+
+#====================== Filebeat Global Options ===============================
+filebeat.registry.path: /opt/sensor/conf/etc/registry/blu_yaf
+
+#============================= Filebeat modules ===============================
+filebeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: true
+  reload.period: 60s
+
+#----------------------------- Logstash output --------------------------------
+output.logstash:
+  bulk_max_size: 8192
+  hosts: ["127.0.0.1:12200"]
+  timeout: 120
+  loadbalance: true
+  worker: 7
+
+#output.file:
+#  path: "/tmp/filebeat"
+#  file: "filebeat"
+

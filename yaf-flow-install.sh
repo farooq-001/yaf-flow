@@ -12,14 +12,6 @@ if ! command -v docker &> /dev/null; then
   exit 1
 fi
 
-if command -v docker-compose &>/dev/null || docker compose version &>/dev/null; then
-    docker-compose version 2>/dev/null || docker compose version
-else
-    echo "❌ Docker Compose not installed"
-    exit 1
-fi
-
-
 # Check if the script has already been run
 log_file="/root/docker/yaf-flow/.docker-compose-install.log"
 if [ -f "$log_file" ]; then

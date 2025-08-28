@@ -12,19 +12,13 @@ if ! command -v docker &> /dev/null; then
   exit 1
 fi
 
-# Check if docker-compose is installed
-if ! command -v docker compose &> /dev/null; then
-  echo "Error: Docker Compose is not installed. Please install Docker Compose first."
-  exit 1
+if command -v docker-compose &>/dev/null || docker compose version &>/dev/null; then
+    docker-compose version 2>/dev/null || docker compose version
+else
+    echo "❌ Docker Compose not installed"
+    exit 1
 fi
 
-# Check docker-compose version
-required_version="1.29.0"
-current_version=$(docker-compose --version | awk '{print $3}' | sed 's/,//')
-if [[ $(printf '%s\n' "$required_version" "$current_version" | sort -V | head -n1) != "$required_version" ]]; then
-  echo "Error: Docker Compose version must be $required_version or higher. Current version: $current_version."
-  exit 1
-fi
 
 # Check if the script has already been run
 log_file="/root/docker/yaf-flow/.docker-compose-install.log"
